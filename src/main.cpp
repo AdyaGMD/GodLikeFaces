@@ -12,8 +12,8 @@ int _demon;
 GJDifficultySprite* _diffSprite;
 
 void specialTexturesCheck(GJDifficultySprite* self) {
-	if (_featureState == 4) {
-		std::string difficultyString = "difficulty_"_spr + std::to_string(_difficulty) + "_" + std::to_string(_demon) + "_god.png";
+	if (_featureState > 2) {
+		std::string difficultyString = "difficulty_"_spr + std::to_string(_difficulty) + "_" + std::to_string(_demon) + "_" + std::to_string(_featureState) + "_god.png";
 		//log::info("{}", difficultyString);
     	self->setDisplayFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(difficultyString.c_str()));
 	}
@@ -45,14 +45,34 @@ class $modify(GJDifficultySprite) {
 
 class $modify(RateStarsLayer) {
 	void onFeature(CCObject* obj) {
+		bool wasFaceModified = false;
+		if (_featureState > 2) wasFaceModified = true;
 		RateStarsLayer::onFeature(obj);
-		(_difficulty == 6) ? _demon = 1 : _demon = 0;
+		if (wasFaceModified) {
+			_diffSprite->updateDifficultyFrame(_difficulty, static_cast<GJDifficultyName>(_demon));
+		}
+		if (_difficulty == 6) {
+			_demon = 1;
+			(_featureState > 2) ? _diffSprite->setPositionY(20.950f) : _diffSprite->setPositionY(25.950f);
+		} else {
+			_demon = 0;
+			_diffSprite->setPositionY(25.950f);
+		}
 		return;
 	}
 	void selectRating(CCObject* obj) {
 		RateStarsLayer::selectRating(obj);
-		(_difficulty == 6) ? _demon = 1 : _demon = 0;
-		specialTexturesCheck(_diffSprite);
+		if (_difficulty == 6) {
+			_demon = 1;
+			if (_featureState > 2)
+			_diffSprite->setPositionY(20.950f);
+		} else {
+			_demon = 0;
+			_diffSprite->setPositionY(25.950f);
+		}
+		if (_featureState > 2) {
+			specialTexturesCheck(_diffSprite);
+		}
 		return;
 	}
 };
