@@ -1,5 +1,6 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/GJDifficultySprite.hpp>
+#include <Geode/modify/LevelInfoLayer.hpp>
 #include <Geode/modify/RateStarsLayer.hpp>
 
 using namespace geode::prelude;
@@ -44,6 +45,15 @@ class $modify(GJDifficultySprite) {
 };
 
 class $modify(RateStarsLayer) {
+
+	bool enable = true;
+
+	bool init(int a, bool b, bool c) {
+		auto result = RateStarsLayer::init(a, b, c);
+		if (b == false && c == false) enable = false;
+		return result;
+	}
+
 	void onFeature(CCObject* obj) {
 		bool wasFaceModified = false;
 		if (_featureState > 2) wasFaceModified = true;
@@ -62,6 +72,7 @@ class $modify(RateStarsLayer) {
 	}
 	void selectRating(CCObject* obj) {
 		RateStarsLayer::selectRating(obj);
+		if (!enable) return;
 		if (_difficulty == 6) {
 			_demon = 1;
 			if (_featureState > 2)
