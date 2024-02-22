@@ -6,6 +6,7 @@
 	"name": "GodlikeFaces",
 	"developer": "AdyaGD",
 	"description": "Adds the Mythic Faces concept by robtop ingame\nUnofficial faces by @RobtopGemes on twitter!",
+	"repository": "https://github.com/AdyaGMD/GodLikeFaces",
 	"resources": {
         "spritesheets": {
 			"GodlikeDiffSheet": [
