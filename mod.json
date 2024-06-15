@@ -1,7 +1,9 @@
 {
-	"geode": "2.0.0",
-	"version": "v1.1.2",
-	"gd": "2.204",
+	"geode": "3.0.0-beta.1",
+	"version": "v1.1.3",
+	"gd": {
+		"win": "2.206"
+	},
 	"id": "adyagd.godlikefaces",
 	"name": "GodlikeFaces",
 	"developer": "AdyaGD",
