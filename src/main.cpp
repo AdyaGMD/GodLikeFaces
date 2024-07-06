@@ -30,14 +30,14 @@ class $modify(GJDifficultySprite) {
 	}
 	static GJDifficultySprite* create(int diff, GJDifficultyName demon) {
 		_difficulty = diff;
-		_demon = static_cast<int>(demon);
+		_demon = diff > 5 ? static_cast<int>(demon) : 0;
 		_featureState = 0;
 		return GJDifficultySprite::create(diff, demon);
 	}
 	void updateDifficultyFrame(int diff, GJDifficultyName demon) {
 		GJDifficultySprite::updateDifficultyFrame(diff, demon);
 		_difficulty = diff;
-		_demon = static_cast<int>(demon);
+		_demon = diff > 5 ? static_cast<int>(demon) : 0;
 		_diffSprite = this;
 		specialTexturesCheck(this);
 		return;
