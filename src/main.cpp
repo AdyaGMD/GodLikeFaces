@@ -1,89 +1,42 @@
 #include <Geode/Geode.hpp>
 #include <Geode/modify/GJDifficultySprite.hpp>
-#include <Geode/modify/LevelInfoLayer.hpp>
-#include <Geode/modify/RateStarsLayer.hpp>
 
 using namespace geode::prelude;
 
-int _featureState;
+class $modify(GFDifficultySprite, GJDifficultySprite) {
+	struct Fields {
+		int m_difficulty;
+		GJDifficultyName m_difficultyName;
+	};
 
-int _difficulty;
-int _demon;
-
-GJDifficultySprite* _diffSprite;
-
-void specialTexturesCheck(GJDifficultySprite* self) {
-	if (_featureState > 2) {
-		std::string difficultyString = "difficulty_"_spr + std::to_string(_difficulty) + "_" + std::to_string(_demon) + "_" + std::to_string(_featureState) + "_god.png";
-		//log::info("{}", difficultyString);
-    	self->setDisplayFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(difficultyString.c_str()));
+	void specialTexturesCheck() {
+		auto diff = m_fields->m_difficulty;
+		auto name = diff > 5 ? m_fields->m_difficultyName : GJDifficultyName::Short;
+		setDisplayFrame(CCSpriteFrameCache::sharedSpriteFrameCache()->spriteFrameByName(
+			m_featureState == GJFeatureState::Legendary || m_featureState == GJFeatureState::Mythic ?
+				fmt::format("difficulty_{}_{}_{}_god.png"_spr, diff, (int)name, (int)m_featureState).c_str() :
+				getDifficultyFrame(diff, name).c_str()
+		));
 	}
-}
 
-class $modify(GJDifficultySprite) {
 	void updateFeatureState(GJFeatureState state) {
-		//state = static_cast<GJFeatureState>(4);
 		GJDifficultySprite::updateFeatureState(state);
-		_featureState = static_cast<int>(state);
-		specialTexturesCheck(this);
+		specialTexturesCheck();
 		return;
 	}
-	static GJDifficultySprite* create(int diff, GJDifficultyName demon) {
-		_difficulty = diff;
-		_demon = diff > 5 ? static_cast<int>(demon) : 0;
-		_featureState = 0;
-		return GJDifficultySprite::create(diff, demon);
+
+	static GJDifficultySprite* create(int diff, GJDifficultyName name) {
+		auto self = static_cast<GFDifficultySprite*>(GJDifficultySprite::create(diff, name));
+		self->m_fields->m_difficulty = diff;
+		self->m_fields->m_difficultyName = diff > 5 ? name : GJDifficultyName::Short;
+		return self;
 	}
-	void updateDifficultyFrame(int diff, GJDifficultyName demon) {
-		GJDifficultySprite::updateDifficultyFrame(diff, demon);
-		_difficulty = diff;
-		_demon = diff > 5 ? static_cast<int>(demon) : 0;
-		_diffSprite = this;
-		specialTexturesCheck(this);
+
+	void updateDifficultyFrame(int diff, GJDifficultyName name) {
+		GJDifficultySprite::updateDifficultyFrame(diff, name);
+		m_fields->m_difficulty = diff;
+		m_fields->m_difficultyName = diff > 5 ? name : GJDifficultyName::Short;
+		specialTexturesCheck();
 		return;
 	}
 };
-
-// class $modify(RateStarsLayer) {
-
-// 	bool enable = true;
-
-// 	bool init(int a, bool b, bool c) {
-// 		auto result = RateStarsLayer::init(a, b, c);
-// 		if (b == false && c == false) enable = false;
-// 		return result;
-// 	}
-
-// 	void onFeature(CCObject* obj) {
-// 		bool wasFaceModified = false;
-// 		if (_featureState > 2) wasFaceModified = true;
-// 		RateStarsLayer::onFeature(obj);
-// 		if (wasFaceModified) {
-// 			_diffSprite->updateDifficultyFrame(_difficulty, static_cast<GJDifficultyName>(_demon));
-// 		}
-// 		if (_difficulty == 6) {
-// 			_demon = 1;
-// 			(_featureState > 2) ? _diffSprite->setPositionY(20.950f) : _diffSprite->setPositionY(25.950f);
-// 		} else {
-// 			_demon = 0;
-// 			_diffSprite->setPositionY(25.950f);
-// 		}
-// 		return;
-// 	}
-// 	void selectRating(CCObject* obj) {
-// 		RateStarsLayer::selectRating(obj);
-// 		if (!enable) return;
-// 		if (_difficulty == 6) {
-// 			_demon = 1;
-// 			if (_featureState > 2)
-// 			_diffSprite->setPositionY(20.950f);
-// 		} else {
-// 			_demon = 0;
-// 			_diffSprite->setPositionY(25.950f);
-// 		}
-// 		if (_featureState > 2) {
-// 			specialTexturesCheck(_diffSprite);
-// 		}
-// 		return;
-// 	}
-// };

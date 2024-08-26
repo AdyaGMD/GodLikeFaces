@@ -1,13 +1,14 @@
 {
-	"geode": "3.2.0",
+	"geode": "3.4.0",
 	"version": "v1.1.6",
 	"gd": {
 		"win": "2.206",
-		"android": "2.206"
+		"android": "2.206",
+		"mac": "2.206"
 	},
 	"id": "adyagd.godlikefaces",
 	"name": "GodlikeFaces",
-	"developer": "AdyaGD",
+	"developers": ["AdyaGD", "hiimjustin000"],
 	"description": "Adds the Mythic Faces concept by robtop ingame\nUnofficial faces by @RobtopGemes on twitter!",
 	"repository": "https://github.com/AdyaGMD/GodLikeFaces",
 	"resources": {
